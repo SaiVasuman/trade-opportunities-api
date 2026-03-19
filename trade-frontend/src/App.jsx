@@ -17,7 +17,7 @@ function App() {
 
     try {
       const res = await fetch(
-        `http://127.0.0.1:8000/analyze/${sector}?api_key=123456`
+        `https://trade-opportunities-api-1-oet5.onrender.com/analyze/${sector}?api_key=123456`
       );
 
       const data = await res.json();
