@@ -110,4 +110,4 @@ Example:
 - Rate limit: 5 requests per minute
 
 ## Author
-Your Name
+Sai Vasuman
