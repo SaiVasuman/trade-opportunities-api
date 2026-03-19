@@ -23,7 +23,6 @@ def rate_limit_handler(request: Request, exc: RateLimitExceeded):
         content={"detail": "Rate limit exceeded. Try again later."},
     )
 
-# Response model
 class AnalysisResponse(BaseModel):
     sector: str
     analysis: str
@@ -37,7 +36,7 @@ def home():
 @app.get("/analyze/{sector}", response_model=AnalysisResponse)
 @limiter.limit("5/minute")
 async def analyze_sector(request: Request, sector: str, api_key: str = Query(..., description="Enter your API Key")):
-    # ✅ API key validation
+    
     if api_key != API_KEY:
         raise HTTPException(
             status_code=401,
@@ -45,7 +44,7 @@ async def analyze_sector(request: Request, sector: str, api_key: str = Query(...
         )
 
     try:
-        # ✅ Input validation
+        
         sector = sector.strip().lower()
 
         if not sector.isalpha():
@@ -54,7 +53,6 @@ async def analyze_sector(request: Request, sector: str, api_key: str = Query(...
                 detail="Sector must contain only alphabets (e.g., technology)"
             )
 
-        # ✅ Fetch sector data
         data = await fetch_sector_news(sector)
 
         if not data:
@@ -63,9 +61,8 @@ async def analyze_sector(request: Request, sector: str, api_key: str = Query(...
                 detail="Failed to fetch sector data"
             )
 
-        # ✅ AI analysis
         analysis = await analyze_with_ai(sector, data)
-        # ✅ Save as markdown file
+        
         filename = f"{sector}_analysis.md"
         with open(filename, "w", encoding="utf-8") as f:
             f.write(f"# {sector.capitalize()} Sector Analysis\n\n")
@@ -76,7 +73,7 @@ async def analyze_sector(request: Request, sector: str, api_key: str = Query(...
                 detail="AI analysis failed"
             )
 
-        # ✅ FINAL CLEAN RESPONSE (only once)
+        
         return {
             "sector": sector,
             "analysis": analysis
